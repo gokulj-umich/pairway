@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Flying in or out of DTW? Pairway matches verified UM riders on similar flights so you can split one Uber.">
+<meta property="og:title" content="Pairway: find a UM co-rider to DTW">
+<meta property="og:description" content="Tell us your flight. We'll match you with UM riders on a similar schedule so you can split the fare.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23F2C230'/%3E%3Crect x='24' y='24' width='16' height='62' rx='8' fill='%230F1B33'/%3E%3Ccircle cx='55' cy='43' r='19' fill='none' stroke='%230F1B33' stroke-width='15'/%3E%3C/svg%3E">
+<style>body{margin:0} img{max-width:100%} [hidden]{display:none!important}</style>
+<title>Pairway Co-Rider Match</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Nunito:wght@900&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&display=swap">
+<style>
+/* Layout: single narrow column, boarding-pass hero card, then steps, numbers, FAQ */
+:root {
+  --bg: #f5f6f9;
+  --surface: #ffffff;
+  --ink: #0f1b33;
+  --muted: #4d5872;
+  --line: #d9deea;
+  --navy: #0f1b33;
+  --maize: #f2c230;
+  --on-maize: #0f1b33;
+  --on-navy: #ffffff;
+  --navy-muted: #b9c3da;
+  --air: #c79500;
+  --brand: "Nunito", "Arial Rounded MT Bold", system-ui, sans-serif;
+  --display: "Oswald", "Arial Narrow", Impact, sans-serif;
+  --body: "DM Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0b1324; --surface: #121d36; --ink: #edf0f7; --muted: #a6b0c8; --line: #24314f;
+    --navy: #17264a; --navy-muted: #b9c3da; --air: #f2c230; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0b1324; --surface: #121d36; --ink: #edf0f7; --muted: #a6b0c8; --line: #24314f;
+  --navy: #17264a; --navy-muted: #b9c3da; --air: #f2c230; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink); font-family: var(--body);
+  font-size: 1rem; line-height: 1.55;
+}
+.wrap {
+  max-width: 640px; margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 28px 48px;
+  display: grid; gap: 40px;
+}
+.brand { display: flex; align-items: center; gap: 10px; }
+.tile { width: 40px; height: 40px; border-radius: 10px; background: var(--maize); display: grid; place-items: center; flex: none; }
+.word { font-family: var(--brand); font-weight: 900; font-size: 1.9rem; letter-spacing: -0.03em; line-height: 1; }
+.air { position: relative; color: var(--air); }
+.air svg { position: absolute; left: 0; bottom: -7px; width: 100%; height: 7px; }
+
+/* Boarding-pass hero */
+.pass { background: var(--navy); color: var(--on-navy); border-radius: 18px; overflow: hidden; }
+.pass-top { padding: 28px 24px 22px; display: grid; gap: 14px; }
+.route { display: flex; align-items: baseline; gap: 12px; font-family: var(--display); font-weight: 700; letter-spacing: .04em; }
+.route .code { font-size: clamp(2.4rem, 11vw, 3.6rem); line-height: 1; }
+.route .arrow { color: var(--maize); font-size: 1.6rem; }
+.route-labels { display: flex; justify-content: space-between; max-width: 300px; color: var(--navy-muted); font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; }
+h1 { font-family: var(--display); font-weight: 600; font-size: clamp(1.6rem, 6vw, 2.1rem); line-height: 1.15; margin: 6px 0 0; text-wrap: balance; }
+.lede { margin: 0; color: var(--navy-muted); max-width: 52ch; }
+.perf { height: 0; border-top: 2px dashed rgba(255,255,255,.22); margin: 0 16px; }
+.pass-bottom { padding: 20px 24px 24px; display: grid; gap: 14px; }
+.cta {
+  display: inline-flex; justify-content: center; align-items: center; gap: 8px;
+  background: var(--maize); color: var(--on-maize); text-decoration: none;
+  font-family: var(--display); font-weight: 600; font-size: 1.15rem; letter-spacing: .05em; text-transform: uppercase;
+  padding: 14px 22px; border-radius: 10px; min-height: 52px;
+}
+.cta:hover { filter: brightness(1.05); }
+.cta:focus-visible { outline: 3px solid var(--on-navy); outline-offset: 3px; }
+.fine { font-size: .82rem; color: var(--navy-muted); margin: 0; }
+.fields { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 10px; }
+.field span { display: block; font-size: .68rem; letter-spacing: .1em; text-transform: uppercase; color: var(--navy-muted); }
+.field b { font-family: var(--display); font-weight: 500; font-size: 1.05rem; letter-spacing: .02em; }
+
+h2 { font-family: var(--display); font-weight: 600; font-size: 1.35rem; letter-spacing: .02em; margin: 0 0 14px; text-wrap: balance; }
+section p { margin: 0; }
+
+/* Steps: a real sequence */
+.steps { list-style: none; padding: 0; margin: 0; display: grid; gap: 14px; counter-reset: s; }
+.steps li { display: grid; grid-template-columns: 36px 1fr; gap: 12px; align-items: start; counter-increment: s; }
+.steps li::before {
+  content: counter(s); width: 32px; height: 32px; border-radius: 50%;
+  border: 2px solid var(--ink); display: grid; place-items: center;
+  font-family: var(--display); font-weight: 600;
+}
+.steps b { display: block; }
+.steps span { color: var(--muted); }
+
+/* Numbers from the carpool channel */
+.nums { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.num { padding: 16px 10px 16px 0; min-width: 0; }
+.num + .num { border-left: 1px solid var(--line); padding-left: 14px; }
+.num b { display: block; font-family: var(--display); font-weight: 600; font-size: clamp(1.5rem, 7vw, 2rem); line-height: 1.1; font-variant-numeric: tabular-nums; }
+.num span { font-size: .85rem; color: var(--muted); }
+.source { font-size: .8rem; color: var(--muted); margin-top: 10px !important; }
+
+details { border-bottom: 1px solid var(--line); padding: 12px 0; }
+details:first-of-type { border-top: 1px solid var(--line); }
+summary { cursor: pointer; font-weight: 700; list-style: none; display: flex; justify-content: space-between; gap: 12px; }
+summary::-webkit-details-marker { display: none; }
+summary::after { content: "+"; font-family: var(--display); font-size: 1.2rem; line-height: 1; }
+details[open] summary::after { content: "–"; }
+summary:focus-visible { outline: 2px solid var(--ink); outline-offset: 4px; border-radius: 4px; }
+details p { color: var(--muted); margin-top: 8px !important; }
+
+.bottom-cta { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 22px; display: grid; gap: 12px; }
+.bottom-cta .cta { justify-self: start; }
+.bottom-cta .cta:focus-visible { outline-color: var(--ink); }
+footer { font-size: .8rem; color: var(--muted); display: grid; gap: 6px; }
+.email { user-select: all; font-weight: 500; color: var(--ink); }
+@media (max-width: 420px) {
+  .nums { grid-template-columns: 1fr; }
+  .num + .num { border-left: 0; padding-left: 0; border-top: 1px solid var(--line); }
+  .bottom-cta .cta { justify-self: stretch; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .cta { transition: filter .15s ease; }
+}
+</style>
+</head>
+<body>
+
+
+<main class="wrap">
+  <div class="brand" role="img" aria-label="Pairway">
+    <span class="tile"><svg viewBox="0 0 100 100" width="30" height="30" aria-hidden="true"><rect x="22" y="24" width="16" height="70" rx="8" fill="#0f1b33"/><circle cx="54" cy="44" r="21" fill="none" stroke="#0f1b33" stroke-width="16"/><circle cx="54" cy="44" r="7" fill="#ffffff"/></svg></span>
+    <span class="word" aria-hidden="true">p<span class="air">air<svg viewBox="0 0 100 18" preserveAspectRatio="none"><path d="M2 15.5 C35 17 65 14 97 1.5 C70 18 35 18.5 2 15.5 Z" fill="currentColor"/></svg></span>way</span>
+  </div>
+
+  <article class="pass">
+    <div class="pass-top">
+      <div class="route" aria-label="Ann Arbor to and from Detroit Metro Airport">
+        <span class="code">ARB</span><span class="arrow" aria-hidden="true">⇄</span><span class="code">DTW</span>
+      </div>
+      <div class="route-labels" aria-hidden="true"><span>Ann Arbor</span><span>Detroit Metro</span></div>
+      <h1>Flying for Thanksgiving? Find a UM co-rider and split the Uber.</h1>
+      <p class="lede">Tell us your flight. We'll match you with other verified UM students, faculty and staff on a similar schedule, and introduce you by email a few days before you travel.</p>
+    </div>
+    <div class="perf" role="presentation"></div>
+    <div class="pass-bottom">
+      <div class="fields">
+        <div class="field"><span>Sign up by</span><b>Fri, Nov 20</b></div>
+        <div class="field"><span>Cost</span><b>Free pilot</b></div>
+        <div class="field"><span>Takes</span><b>~3 min</b></div>
+      </div>
+      <a class="cta" id="cta-top" href="#" data-survey>Find my co-riders →</a>
+      <p class="fine">Also matching for December break and the January return.</p>
+    </div>
+  </article>
+
+  <section aria-labelledby="how">
+    <h2 id="how">How it works</h2>
+    <ol class="steps">
+      <li><div><b>Share your trip</b><span>Your flight date and time, terminal, and where in Ann Arbor you're going.</span></div></li>
+      <li><div><b>Get matched</b><span>We group 2–4 riders landing or departing within about an hour of each other.</span></div></li>
+      <li><div><b>Ride together</b><span>One person books the Uber or Lyft, and everyone pays back their share on Venmo.</span></div></li>
+    </ol>
+  </section>
+
+  <section aria-labelledby="why">
+    <h2 id="why">Why this exists</h2>
+    <div class="nums">
+      <div class="num"><b>470+</b><span>DTW ride requests posted by UM students since Jan 2025</span></div>
+      <div class="num"><b>1 in 4</b><span>found a co-rider within an hour of their trip</span></div>
+      <div class="num"><b>~$100</b><span>for a solo late-night Uber to Ann Arbor</span></div>
+    </div>
+    <p class="source">From an analysis of UM's #dtw-airport-carpool Slack channel. Sharing with two others cuts your fare, and your trip's emissions, by about two-thirds.</p>
+  </section>
+
+  <section aria-labelledby="faq">
+    <h2 id="faq">Questions</h2>
+    <details><summary>Is this an app?</summary><p>Not yet. During the pilot, matching is done by hand by the person building Pairway. What we learn here decides what the app does.</p></details>
+    <details><summary>Who sees my information?</summary><p>Only the riders in your matched group, and only your first name, email and (if you add it) phone number. Nothing is sold or shared with anyone else.</p></details>
+    <details><summary>What if my flight is delayed?</summary><p>Message your group. During the pilot there's no fee and no penalty if plans change. Just let your co-riders know.</p></details>
+    <details><summary>Does it cost anything?</summary><p>The matching is free. You pay only your share of the ride.</p></details>
+  </section>
+
+  <div class="bottom-cta">
+    <h2 style="margin:0">Don't ride alone this break.</h2>
+    <a class="cta" id="cta-bottom" href="#" data-survey>Find my co-riders →</a>
+  </div>
+
+  <footer>
+    <p>Pairway is an independent student project by Gokul Jayakumar, Ross School of Business. It is not an official University of Michigan service.</p>
+    <p>Questions: <span class="email">gokulj@umich.edu</span></p>
+  </footer>
+</main>
+
+<script>
+  // Paste the published Qualtrics anonymous link here. "src" lets the survey count sign-ups that came from this page.
+  const SURVEY_URL = "https://umich.qualtrics.com/jfe/form/SV_dfZbTCHTae7Tv94";
+  const link = SURVEY_URL + (SURVEY_URL.includes("?") ? "&" : "?") + "src=landing";
+  document.querySelectorAll("[data-survey]").forEach(a => {
+    a.href = link; a.target = "_blank"; a.rel = "noopener";
+  });
+</script>
+
+</body>
+</html>
